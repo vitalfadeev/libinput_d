@@ -1,13 +1,9 @@
-import std.stdio;
-import std.file;
-import std.string;
-import core.stdc.stdio;
-import core.sys.posix.fcntl;
-import core.stdc.errno;
-import core.sys.posix.unistd;
-import core.sys.posix.poll : poll,pollfd,POLLIN,POLLHUP,POLLERR;
-import core.sys.posix.signal;
-import core.sys.posix.time;
+import std.stdio             : writeln,printf;
+import core.sys.posix.fcntl  : open;
+import core.sys.posix.unistd : close;
+import core.stdc.errno       : errno;
+import core.sys.posix.poll   : poll,pollfd,POLLIN,POLLHUP,POLLERR;
+import core.sys.posix.time   : timespec,clock_gettime,CLOCK_MONOTONIC;
 import libinput_d;
 import udev_d;
 
