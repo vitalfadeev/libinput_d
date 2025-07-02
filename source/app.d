@@ -1,8 +1,9 @@
-import std.stdio             : writeln,printf;
+import std.stdio             : writeln,writefln;
+import std.string            : fromStringz;
 import core.sys.posix.fcntl  : open;
 import core.sys.posix.unistd : close;
 import core.sys.posix.poll   : poll,pollfd,POLLIN,POLLHUP,POLLERR;
-import core.sys.posix.time   : timespec,clock_gettime,CLOCK_MONOTONIC;
+import core.sys.posix.time   : clock_gettime,timespec,CLOCK_MONOTONIC;
 import core.stdc.errno       : errno;
 import libinput_d;
 import udev_d;
@@ -50,17 +51,17 @@ main () {
 	        case libinput_event_type.LIBINPUT_EVENT_DEVICE_ADDED: {
 	            libinput_device* _dev = libinput_event_get_device (event);
 	            const char *name = libinput_device_get_name (_dev);
-	            printf ("%s added\n", name);
+	            writefln ("%s added",name.fromStringz);
 	            libinput_device_config_send_events_set_mode (_dev, libinput_config_send_events_mode.LIBINPUT_CONFIG_SEND_EVENTS_ENABLED);
 	            if (libinput_device_has_capability (_dev, libinput_device_capability.LIBINPUT_DEVICE_CAP_TOUCH)) {
-	                printf ("has cap touch\n");
+	                writeln ("has cap touch");
 	                libinput_device_ref (_dev);
 	                // config device?
 	            }
 	            break;
 	        }
 	        default:
-	            printf ("other event %d\n", type);
+	            writefln ("other event %d", type);
 	            break;
 	        }
 	        libinput_event_destroy (event);
@@ -98,7 +99,7 @@ main () {
 
 		            // handle the event here
 		            auto type = libinput_event_get_type (event);
-		            //printf("loop\n");
+		            //writeln("loop");
 		            writeln (type);
 
 		            switch (type) {
@@ -107,7 +108,7 @@ main () {
 		            case libinput_event_type.LIBINPUT_EVENT_TOUCH_UP:
 		            case libinput_event_type.LIBINPUT_EVENT_TOUCH_FRAME:
 		            case libinput_event_type.LIBINPUT_EVENT_TOUCH_CANCEL: {
-		                //printf("touch event %d\n", type);
+		                //writeln ("touch event %d", type);
 		                //if (m_touchScreenGestureManager) {
 		                //    m_touchScreenGestureManager.processEvent (event);
 		                //}
@@ -126,7 +127,7 @@ main () {
 		                break;
 		            }
 		            default:
-		                //printf("other event %d\n", type);
+		                //writeln ("other event %d\n", type);
 		                break;
 		            }
 		            libinput_event_destroy (event);
