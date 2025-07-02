@@ -3994,3 +3994,28 @@ libinput_config_dwt_state libinput_device_config_dwt_get_default_enabled (
     libinput_device* device);
 
 /* LIBINPUT_H */
+
+/**
+A workaround that BindBC used to use for C-style enums.
+It is included here mostly for preservation.
+*/
+enum 
+makeExpandedEnum (Enum) = () nothrow pure @safe {
+    string ret;
+    foreach (member; __traits (allMembers, Enum)) {
+        ret ~= "\nenum "~member~" = "~Enum.stringof~"."~member~";";
+    }
+    return ret;
+} ();
+
+string 
+makeExpandedEnums () nothrow pure @safe {
+    string ret;
+    foreach (m; __traits (allMembers, mixin(__MODULE__))) {
+        static if (is (__traits (getMember,mixin(__MODULE__),m)==enum))
+            ret ~= "\nmixin (makeExpandedEnum!" ~m~ ");";
+    }
+    return ret;
+}
+
+mixin (makeExpandedEnums());

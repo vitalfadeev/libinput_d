@@ -48,7 +48,7 @@ main () {
 	    while ((event = libinput_get_event (li)) != null) {
 	        auto type = libinput_event_get_type (event);
 	        switch (type) {
-	        case libinput_event_type.LIBINPUT_EVENT_DEVICE_ADDED: {
+	        case LIBINPUT_EVENT_DEVICE_ADDED: {
 	            libinput_device* _dev = libinput_event_get_device (event);
 	            const char *name = libinput_device_get_name (_dev);
 	            writefln ("%s added",name.fromStringz);
@@ -103,11 +103,11 @@ main () {
 		            writeln (type);
 
 		            switch (type) {
-		            case libinput_event_type.LIBINPUT_EVENT_TOUCH_DOWN:
-		            case libinput_event_type.LIBINPUT_EVENT_TOUCH_MOTION:
-		            case libinput_event_type.LIBINPUT_EVENT_TOUCH_UP:
-		            case libinput_event_type.LIBINPUT_EVENT_TOUCH_FRAME:
-		            case libinput_event_type.LIBINPUT_EVENT_TOUCH_CANCEL: {
+		            case LIBINPUT_EVENT_TOUCH_DOWN:
+		            case LIBINPUT_EVENT_TOUCH_MOTION:
+		            case LIBINPUT_EVENT_TOUCH_UP:
+		            case LIBINPUT_EVENT_TOUCH_FRAME:
+		            case LIBINPUT_EVENT_TOUCH_CANCEL: {
 		                //writeln ("touch event %d", type);
 		                //if (m_touchScreenGestureManager) {
 		                //    m_touchScreenGestureManager.processEvent (event);
@@ -116,12 +116,12 @@ main () {
 		                break;
 		            }
 
-		            case libinput_event_type.LIBINPUT_EVENT_GESTURE_SWIPE_BEGIN:
-		            case libinput_event_type.LIBINPUT_EVENT_GESTURE_SWIPE_UPDATE:
-		            case libinput_event_type.LIBINPUT_EVENT_GESTURE_SWIPE_END:
-		            case libinput_event_type.LIBINPUT_EVENT_GESTURE_PINCH_BEGIN:
-		            case libinput_event_type.LIBINPUT_EVENT_GESTURE_PINCH_UPDATE:
-		            case libinput_event_type.LIBINPUT_EVENT_GESTURE_PINCH_END: {
+		            case LIBINPUT_EVENT_GESTURE_SWIPE_BEGIN:
+		            case LIBINPUT_EVENT_GESTURE_SWIPE_UPDATE:
+		            case LIBINPUT_EVENT_GESTURE_SWIPE_END:
+		            case LIBINPUT_EVENT_GESTURE_PINCH_BEGIN:
+		            case LIBINPUT_EVENT_GESTURE_PINCH_UPDATE:
+		            case LIBINPUT_EVENT_GESTURE_PINCH_END: {
 		                //TouchpadGestureManager::getManager().processEvent (event);
 		                writeln ("TouchpadGestureManager");
 		                break;
