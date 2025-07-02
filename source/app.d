@@ -1,9 +1,9 @@
 import std.stdio             : writeln,printf;
 import core.sys.posix.fcntl  : open;
 import core.sys.posix.unistd : close;
-import core.stdc.errno       : errno;
 import core.sys.posix.poll   : poll,pollfd,POLLIN,POLLHUP,POLLERR;
 import core.sys.posix.time   : timespec,clock_gettime,CLOCK_MONOTONIC;
+import core.stdc.errno       : errno;
 import libinput_d;
 import udev_d;
 
