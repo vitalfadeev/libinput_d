@@ -27,7 +27,7 @@ LibInput {
     }
 
     int
-    opApply (int delegate (LibInput_Event event) dg) {
+    opApply (int delegate (Event event) dg) {
         pollfd fds;
 
         fds.fd = libinput_get_fd (_li);
@@ -37,7 +37,7 @@ LibInput {
         do {
             for (libinput_dispatch (_li), event = libinput_get_event (_li); event != null; libinput_event_destroy (event), libinput_dispatch (_li), event = libinput_get_event (_li)) {
                 // dg
-                if (auto result = dg (cast (LibInput_Event) event)) {
+                if (auto result = dg (cast (Event) event)) {
                     libinput_event_destroy (event);
                     return result;  // EXIT
                 }
@@ -97,7 +97,7 @@ LibInput {
 }
 
 struct
-LibInput_Event {
+Event {
     libinput_event* _super;
     alias _super this;
 
