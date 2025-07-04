@@ -126,7 +126,7 @@ Event {
     Pointer                         pointer ()                      { return (cast (Pointer) (libinput_event_get_pointer_event (event))); }
     Keyboard                        keyboard ()                     { return (cast (Keyboard) (libinput_event_get_keyboard_event (event))); }
     Touch                           touch ()                        { return (cast (Touch) (libinput_event_get_touch_event (event))); }
-    Tablet_Tool                     tablet_tool ()                  { return (cast (Tablet_Tool) (libinput_event_get_tablet_tool_event (event))); }
+    Tablet_Tool                     tablet ()                       { return (cast (Tablet_Tool) (libinput_event_get_tablet_tool_event (event))); }
 
     void                            destroy ()                      {        libinput_event_destroy (event); }
 }
