@@ -2,6 +2,7 @@ import std.conv        : to;
 import std.stdio       : writeln,writefln;
 import libinput_struct : LibInput;
 import libinput_d;
+import input_event_codes;
 
 
 
@@ -17,7 +18,7 @@ main () {
 			case LIBINPUT_EVENT_KEYBOARD_KEY:
 				writefln ("%s: %d: %s", 
 					event.type.to!string, 
-					event.keyboard.get_key, 
+					event.keyboard.get_key,  // KEY_1,KEY_ESC,KEY_BACKSPACE
 					event.keyboard.get_key_state.to!string); break;
 			case LIBINPUT_EVENT_POINTER_MOTION:
 				writefln ("%s: dx,dy: %f,%f", 
@@ -32,7 +33,7 @@ main () {
 			case LIBINPUT_EVENT_POINTER_BUTTON:
 				writefln ("%s: %d %s", 
 					event.type.to!string, 
-					event.pointer.button, 
+					event.pointer.button,  // BTN_LEFT,BTN_RIGHT,BTN_MIDDLE
 					event.pointer.button_state.to!string); break;
 			case LIBINPUT_EVENT_POINTER_AXIS:
 				writefln ("%s: axe_source: %s: x,y: %f,%f", 
