@@ -14,12 +14,13 @@ main () {
 			case LIBINPUT_EVENT_KEYBOARD_KEY:
 				writefln ("%s: %d: %s", event.type.to!string, event.keyboard.get_key, event.keyboard.get_key_state.to!string); break;
 			case LIBINPUT_EVENT_POINTER_MOTION:
+				writefln ("%s: dx,dy: %f,%f", event.type.to!string, event.pointer.dx, event.pointer.dy); break;
 			case LIBINPUT_EVENT_POINTER_MOTION_ABSOLUTE:
-				writefln ("%s", event.type.to!string); break;
+				writefln ("%s: abs_x,abx_y: %f,%f", event.type.to!string, event.pointer.absolute_x, event.pointer.absolute_y); break;
 			case LIBINPUT_EVENT_POINTER_BUTTON:
-				writefln ("%s: %d", event.type.to!string, event.pointer.button); break;
+				writefln ("%s: %d %s", event.type.to!string, event.pointer.button, event.pointer.button_state.to!string); break;
 			case LIBINPUT_EVENT_POINTER_AXIS:
-				writefln ("%s", event.type.to!string); break;
+				writefln ("%s: axe_source: %s", event.type.to!string, event.pointer.axis_source.to!string); break;
 			case LIBINPUT_EVENT_TOUCH_DOWN:
 			case LIBINPUT_EVENT_TOUCH_UP:
 			case LIBINPUT_EVENT_TOUCH_MOTION:
