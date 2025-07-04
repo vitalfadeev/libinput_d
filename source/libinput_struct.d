@@ -34,7 +34,7 @@ LibInput {
         fds.events = POLLIN;
         fds.revents = 0;
 
-        while (/*!stop && */poll (&fds, 1, -1) > -1) {
+        do {
             for (libinput_dispatch (_li), event = libinput_get_event (_li); event != null; libinput_event_destroy (event), libinput_dispatch (_li), event = libinput_get_event (_li)) {
                 // dg
                 if (auto result = dg (cast (LibInput_Event) event)) {
@@ -58,10 +58,10 @@ LibInput {
                     default:
                 }
             }
-        } 
+        } while (/*!stop && */poll (&fds, 1, -1) > -1);
 
         return 0;
-    }   
+    } 
 
     extern (C)
     static int 
