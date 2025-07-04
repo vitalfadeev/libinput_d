@@ -20,6 +20,8 @@ LibInput {
     this (libinput* _li) {
         if (_li is null)
             _init ();
+        else
+            this._li = _li;
     }
 
     ~this () {
@@ -111,10 +113,22 @@ Event {
     libinput_event* event;
     alias event this;
 
-    libinput_event_type type ()    { return libinput_event_get_type (event); }
-    Device              device  () { return (cast (Device)  (libinput_event_get_device (event))); }
-    Pointer             pointer () { return (cast (Pointer) (libinput_event_get_pointer_event (event))); }
-    void                destroy () {        libinput_event_destroy (event); }
+    libinput_event_type             type ()                         { return libinput_event_get_type (event); }
+    libinput*                       get_context ()                  { return libinput_event_get_context (event); }
+    libinput_event_pointer*         get_pointer_event ()            { return libinput_event_get_pointer_event (event); }
+    libinput_event_keyboard*        get_keyboard_event ()           { return libinput_event_get_keyboard_event (event); }
+    libinput_event_touch*           get_touch_event ()              { return libinput_event_get_touch_event (event); }
+    libinput_event_gesture*         get_gesture_event ()            { return libinput_event_get_gesture_event (event); }
+    libinput_event_tablet_tool*     get_tablet_tool_event ()        { return libinput_event_get_tablet_tool_event (event); }
+    libinput_event_device_notify*   get_device_notify_event ()      { return libinput_event_get_device_notify_event (event); }
+    //libinput_event*                 device_notify_get_base_event () { return libinput_event_device_notify_get_base_event (libinput_event_device_notify* event);
+    Device                          device  ()                      { return (cast (Device)  (libinput_event_get_device (event))); }
+    Pointer                         pointer ()                      { return (cast (Pointer) (libinput_event_get_pointer_event (event))); }
+    Keyboard                        keyboard ()                     { return (cast (Keyboard) (libinput_event_get_keyboard_event (event))); }
+    Touch                           touch ()                        { return (cast (Touch) (libinput_event_get_touch_event (event))); }
+    Tablet_Tool                     tablet_tool ()                  { return (cast (Tablet_Tool) (libinput_event_get_tablet_tool_event (event))); }
+
+    void                            destroy ()                      {        libinput_event_destroy (event); }
 }
 
 struct
@@ -226,4 +240,118 @@ Pointer {
     libinput_pointer_axis_source axis_source ()                                   { return libinput_event_pointer_get_axis_source (event); }
     double                       axis_value_discrete (libinput_pointer_axis axis) { return libinput_event_pointer_get_axis_value_discrete (event,axis); }
     libinput_event*              base_event ()                                    { return libinput_event_pointer_get_base_event (event); }
+}
+
+struct
+Keyboard {
+    libinput_event_keyboard* event;
+    alias event this;
+
+    pragma (inline,true):
+    uint                get_time ()             { return libinput_event_keyboard_get_time (event); }
+    ulong               get_time_usec ()        { return libinput_event_keyboard_get_time_usec (event); }
+    uint                get_key ()              { return libinput_event_keyboard_get_key (event); }
+    libinput_key_state  get_key_state ()        { return libinput_event_keyboard_get_key_state (event); }
+    libinput_event*     get_base_event ()       { return libinput_event_keyboard_get_base_event (event); }
+    uint                get_seat_key_count ()   { return libinput_event_keyboard_get_seat_key_count (event); }
+}
+
+struct
+Touch {
+    libinput_event_touch* event;
+    alias event this;
+
+    pragma (inline,true):
+    uint            get_time ()                     { return libinput_event_touch_get_time (event); }
+    ulong           get_time_usec ()                { return libinput_event_touch_get_time_usec (event); }
+    int             get_slot ()                     { return libinput_event_touch_get_slot (event); }
+    int             get_seat_slot ()                { return libinput_event_touch_get_seat_slot (event); }
+    double          get_x ()                        { return libinput_event_touch_get_x (event); }
+    double          get_y ()                        { return libinput_event_touch_get_y (event); }
+    double          get_x_transformed (uint width)  { return libinput_event_touch_get_x_transformed (event,width); }
+    double          get_y_transformed (uint height) { return libinput_event_touch_get_y_transformed (event,height); }
+    libinput_event* get_base_event ()               { return libinput_event_touch_get_base_event (event); }
+}
+
+struct
+Gesture {
+    libinput_event_gesture* event;
+    alias event this;
+
+    pragma (inline,true):
+    uint            get_time ()             { return libinput_event_gesture_get_time (event); }
+    ulong           get_time_usec ()        { return libinput_event_gesture_get_time_usec (event); }
+    libinput_event* get_base_event ()       { return libinput_event_gesture_get_base_event (event); }
+    int             get_finger_count ()     { return libinput_event_gesture_get_finger_count (event); }
+    int             get_cancelled ()        { return libinput_event_gesture_get_cancelled (event); }
+    double          get_dx ()               { return libinput_event_gesture_get_dx (event); }
+    double          get_dy ()               { return libinput_event_gesture_get_dy (event); }
+    double          get_dx_unaccelerated () { return libinput_event_gesture_get_dx_unaccelerated (event); }
+    double          get_dy_unaccelerated () { return libinput_event_gesture_get_dy_unaccelerated (event); }
+    double          get_scale ()            { return libinput_event_gesture_get_scale (event); }
+    double          get_angle_delta ()      { return libinput_event_gesture_get_angle_delta (event); }
+
+}
+
+
+struct
+Tablet_Tool {
+    libinput_event_tablet_tool* event;
+    alias event this;
+
+    pragma (inline,true):
+    libinput_event*         get_base_event ()           { return libinput_event_tablet_tool_get_base_event (event); }
+    int                     x_has_changed ()            { return libinput_event_tablet_tool_x_has_changed (event); }
+    int                     y_has_changed ()            { return libinput_event_tablet_tool_y_has_changed (event); }
+    int                     pressure_has_changed ()     { return libinput_event_tablet_tool_pressure_has_changed (event); }
+    int                     distance_has_changed ()     { return libinput_event_tablet_tool_distance_has_changed (event); }
+    int                     tilt_x_has_changed ()       { return libinput_event_tablet_tool_tilt_x_has_changed (event); }
+    int                     tilt_y_has_changed ()       { return libinput_event_tablet_tool_tilt_y_has_changed (event); }
+    int                     rotation_has_changed ()     { return libinput_event_tablet_tool_rotation_has_changed (event); }
+    int                     slider_has_changed ()       { return libinput_event_tablet_tool_slider_has_changed (event); }
+    int                     wheel_has_changed ()        { return libinput_event_tablet_tool_wheel_has_changed (event); }
+    double                  get_x ()                    { return libinput_event_tablet_tool_get_x (event); }
+    double                  get_y ()                    { return libinput_event_tablet_tool_get_y (event); }
+    double                  get_pressure ()             { return libinput_event_tablet_tool_get_pressure (event); }
+    double                  get_distance ()             { return libinput_event_tablet_tool_get_distance (event); }
+    double                  get_tilt_x ()               { return libinput_event_tablet_tool_get_tilt_x (event); }
+    double                  get_tilt_y ()               { return libinput_event_tablet_tool_get_tilt_y (event); }
+    double                  get_rotation ()             { return libinput_event_tablet_tool_get_rotation (event); }
+    double                  get_slider_position ()      { return libinput_event_tablet_tool_get_slider_position (event); }
+    double                  get_wheel_delta ()          { return libinput_event_tablet_tool_get_wheel_delta (event); }
+    int                     get_wheel_delta_discrete () { return libinput_event_tablet_tool_get_wheel_delta_discrete (event); }
+    double                  get_x_transformed (uint width)      { return libinput_event_tablet_tool_get_x_transformed (event,width); }
+    double                  get_y_transformed (uint height)     { return libinput_event_tablet_tool_get_y_transformed (event,height); }
+    libinput_tablet_tool_proximity_state get_proximity_state () { return libinput_event_tablet_tool_get_proximity_state (event); }
+    libinput_tablet_tool_tip_state       get_tip_state ()       { return libinput_event_tablet_tool_get_tip_state (event); }
+    uint                    get_button ()               { return libinput_event_tablet_tool_get_button (event); }
+    libinput_button_state   get_button_state ()         { return libinput_event_tablet_tool_get_button_state (event); }
+    uint                    get_seat_button_count ()    { return libinput_event_tablet_tool_get_seat_button_count (event); }
+    uint                    get_time ()                 { return libinput_event_tablet_tool_get_time (event); }
+    ulong                   get_time_usec ()            { return libinput_event_tablet_tool_get_time_usec (event); }
+    Tool                    get_tool ()                 { return cast (Tool) (libinput_event_tablet_tool_get_tool (event)); }
+}
+
+
+struct
+Tool {
+    libinput_tablet_tool* tool;
+    alias tool this;
+
+    pragma (inline,true):
+    libinput_tablet_tool_type   get_type ()                     { return libinput_tablet_tool_get_type (tool); }
+    ulong                       get_tool_id ()                  { return libinput_tablet_tool_get_tool_id (tool); }
+    libinput_tablet_tool*       ref_ ()                         { return libinput_tablet_tool_ref (tool); }
+    libinput_tablet_tool*       unref ()                        { return libinput_tablet_tool_unref (tool); }
+    int                         has_pressure ()                 { return libinput_tablet_tool_has_pressure (tool); }
+    int                         has_distance ()                 { return libinput_tablet_tool_has_distance (tool); }
+    int                         has_tilt ()                     { return libinput_tablet_tool_has_tilt (tool); }
+    int                         has_rotation ()                 { return libinput_tablet_tool_has_rotation (tool); }
+    int                         has_slider ()                   { return libinput_tablet_tool_has_slider (tool); }
+    int                         has_wheel ()                    { return libinput_tablet_tool_has_wheel (tool); }
+    int                         has_button (uint code)          { return libinput_tablet_tool_has_button (tool, code); }
+    int                         is_unique ()                    { return libinput_tablet_tool_is_unique (tool); }
+    ulong                       get_serial ()                   { return libinput_tablet_tool_get_serial (tool); }
+    void*                       get_user_data ()                { return libinput_tablet_tool_get_user_data (tool); }
+    void                        set_user_data (void* user_data) { return libinput_tablet_tool_set_user_data (tool,user_data); }
 }
