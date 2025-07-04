@@ -4,7 +4,12 @@ import libinput_struct : LibInput;
 
 void
 main () {
-	foreach (libinput_event; LibInput (""))
-		writeln (libinput_event.type);
+	foreach (event; LibInput (""))
+		switch (event.type) {
+			case "LIBINPUT_EVENT_DEVICE_ADDED":
+				writefln ("%s: %s added", event.type, event.device.name); break;
+			default:
+				writeln (event.type);
+		}
 }
 

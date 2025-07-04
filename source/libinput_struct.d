@@ -47,18 +47,15 @@ LibInput {
                 switch (type) {
                     case LIBINPUT_EVENT_DEVICE_ADDED: {
                         libinput_device* _dev = libinput_event_get_device (event);
-                        printf ("%s added\n",libinput_device_get_name (_dev));
                         libinput_device_config_send_events_set_mode (_dev, LIBINPUT_CONFIG_SEND_EVENTS_ENABLED);
-                        if (libinput_device_has_capability (_dev, LIBINPUT_DEVICE_CAP_TOUCH)) {
-                            printf ("has cap touch\n");
+                        if (libinput_device_has_capability (_dev, LIBINPUT_DEVICE_CAP_TOUCH))
                             libinput_device_ref (_dev);
-                        }
                         break;
                     }
                     default:
                 }
             }
-        } while (/*!stop && */poll (&fds, 1, -1) > -1);
+        } while (poll (&fds, 1, -1) >= 0);
 
         return 0;
     } 
@@ -108,5 +105,21 @@ LibInput_Event {
     type () {
         auto type = libinput_event_get_type (_super);
         return (cast (libinput_event_type) type).to!string;
+    }
+
+    Device
+    device () {
+        return (cast (Device) (libinput_event_get_device (_super)));
+    }
+}
+
+struct
+Device {
+    libinput_device* _super;
+    alias _super this;
+    
+    string
+    name () {
+        return libinput_device_get_name (_super).to!string;
     }
 }
