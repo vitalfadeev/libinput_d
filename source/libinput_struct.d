@@ -123,64 +123,64 @@ Device {
     uint                            id_vendor ()                    { return libinput_device_get_id_vendor (device); }
     const(char)*                    output_name ()                  { return libinput_device_get_output_name (device); }
     libinput_seat*                  seat ()                         { return libinput_device_get_seat (device); }
-    int                             seat_logical_name (const(char)* name) { return libinput_device_set_seat_logical_name (device,name); }
-    udev_device*                    udev_device_ ()                 { return libinput_device_get_udev_device (device); }
-    void                            update (libinput_led leds)      {        libinput_device_led_update (device, leds); }
+    int                             set_seat_logical_name (const(char)* name) { return libinput_device_set_seat_logical_name (device,name); }
+    udev_device*                    get_udev_device ()              { return libinput_device_get_udev_device (device); }
+    void                            led_update (libinput_led leds)  {        libinput_device_led_update (device, leds); }
     int                             has_capability (libinput_device_capability capability) { return libinput_device_has_capability (device, capability); }
-    int                             size (double* width,double* height)                         { return libinput_device_get_size (device,width,height); }
-    int                             has_button (uint code)          { return libinput_device_pointer_has_button (device, code); }
-    int                             has_key (uint code)             { return libinput_device_keyboard_has_key (device, code); }
+    int                             get_size (double* width,double* height)                         { return libinput_device_get_size (device,width,height); }
+    int                             pointer_has_button (uint code)          { return libinput_device_pointer_has_button (device, code); }
+    int                             keyboard_has_key (uint code)    { return libinput_device_keyboard_has_key (device, code); }
 
-    int                             finger_count ()                 { return libinput_device_config_tap_get_finger_count (device); }
-    libinput_config_status          enabled (libinput_config_tap_state enable)                      { return libinput_device_config_tap_set_enabled (device,enable); }
-    libinput_config_tap_state       enabled ()                      { return libinput_device_config_tap_get_enabled (device); }
-    libinput_config_tap_state       default_enabled ()              { return libinput_device_config_tap_get_default_enabled (device); }
-    libinput_config_status          drag_lock_enabled (libinput_config_drag_lock_state enable)            { return libinput_device_config_tap_set_drag_lock_enabled (device, enable); }
-    libinput_config_drag_lock_state tap_get_drag_lock_enabled ()    { return libinput_device_config_tap_get_drag_lock_enabled (device); }
-    libinput_config_drag_lock_state tap_get_default_drag_lock_enabled () { return libinput_device_config_tap_get_default_drag_lock_enabled (device); }
-    int                             calibration_has_matrix ()       { return libinput_device_config_calibration_has_matrix (device); }
-    libinput_config_status          calibration_set_matrix (ref const(float)[6] matrix)       { return libinput_device_config_calibration_set_matrix (device, matrix); }
-    int                             calibration_get_matrix (ref float[6] matrix)       { return libinput_device_config_calibration_get_matrix (device, matrix); }
-    int                             calibration_get_default_matrix (ref float[6] matrix) { return libinput_device_config_calibration_get_default_matrix (device, matrix); }
-    uint                            send_events_get_modes ()        { return libinput_device_config_send_events_get_modes (device); }
+    int                             config_tap_get_finger_count ()  { return libinput_device_config_tap_get_finger_count (device); }
+    libinput_config_status          config_tap_set_enabled (libinput_config_tap_state enable)                      { return libinput_device_config_tap_set_enabled (device,enable); }
+    libinput_config_tap_state       config_tap_get_enabled ()       { return libinput_device_config_tap_get_enabled (device); }
+    libinput_config_tap_state       config_tap_get_default_enabled ()              { return libinput_device_config_tap_get_default_enabled (device); }
+    libinput_config_status          config_tap_set_drag_lock_enabled (libinput_config_drag_lock_state enable)            { return libinput_device_config_tap_set_drag_lock_enabled (device, enable); }
+    libinput_config_drag_lock_state config_tap_get_drag_lock_enabled ()    { return libinput_device_config_tap_get_drag_lock_enabled (device); }
+    libinput_config_drag_lock_state config_tap_get_default_drag_lock_enabled () { return libinput_device_config_tap_get_default_drag_lock_enabled (device); }
+    int                             config_calibration_has_matrix ()       { return libinput_device_config_calibration_has_matrix (device); }
+    libinput_config_status          config_calibration_set_matrix (ref const(float)[6] matrix)       { return libinput_device_config_calibration_set_matrix (device, matrix); }
+    int                             config_calibration_get_matrix (ref float[6] matrix)       { return libinput_device_config_calibration_get_matrix (device, matrix); }
+    int                             config_calibration_get_default_matrix (ref float[6] matrix) { return libinput_device_config_calibration_get_default_matrix (device, matrix); }
+    uint                            config_send_events_get_modes ()        { return libinput_device_config_send_events_get_modes (device); }
     libinput_config_status          config_send_events_set_mode (uint mode)         { return libinput_device_config_send_events_set_mode (device,mode); }
-    uint                            send_events_get_mode ()         { return libinput_device_config_send_events_get_mode (device); }
-    uint                            send_events_get_default_mode () { return libinput_device_config_send_events_get_default_mode (device); }
-    int                             accel_is_available ()           { return libinput_device_config_accel_is_available (device); }
-    libinput_config_status          accel_set_speed (double speed)              { return libinput_device_config_accel_set_speed (device, speed); }
-    double                          accel_get_speed ()              { return libinput_device_config_accel_get_speed (device); }
-    double                          accel_get_default_speed ()      { return libinput_device_config_accel_get_default_speed (device); }
-    uint                            accel_get_profiles ()           { return libinput_device_config_accel_get_profiles (device); }
-    libinput_config_status          accel_set_profile (libinput_config_accel_profile mode)            { return libinput_device_config_accel_set_profile (device, mode); }
-    libinput_config_accel_profile   accel_get_profile ()            { return libinput_device_config_accel_get_profile (device); }
-    libinput_config_accel_profile   accel_get_default_profile ()    { return libinput_device_config_accel_get_default_profile (device); }
-    int                             scroll_has_natural_scroll ()    { return libinput_device_config_scroll_has_natural_scroll (device); }
-    libinput_config_status          scroll_set_natural_scroll_enabled (int enable) { return libinput_device_config_scroll_set_natural_scroll_enabled (device,enable); }
-    int                             scroll_get_natural_scroll_enabled () { return libinput_device_config_scroll_get_natural_scroll_enabled (device); }
-    int                             scroll_get_default_natural_scroll_enabled () { return libinput_device_config_scroll_get_default_natural_scroll_enabled (device); }
-    int                             left_handed_is_available ()     { return libinput_device_config_left_handed_is_available (device); }
-    libinput_config_status          left_handed_set (int left_handed)              { return libinput_device_config_left_handed_set (device,left_handed); }
-    int                             left_handed_get ()              { return libinput_device_config_left_handed_get (device); }
-    int                             left_handed_get_default ()      { return libinput_device_config_left_handed_get_default (device); }
-    uint                            click_get_methods ()            { return libinput_device_config_click_get_methods (device); }
-    libinput_config_status          click_set_method (libinput_config_click_method method)             { return libinput_device_config_click_set_method (device, method); }
-    libinput_config_click_method    click_get_method ()             { return libinput_device_config_click_get_method (device); }
-    libinput_config_click_method    click_get_default_method ()     { return libinput_device_config_click_get_default_method (device); }
-    int                             middle_emulation_is_available () { return libinput_device_config_middle_emulation_is_available (device); }
-    libinput_config_status          middle_emulation_set_enabled (libinput_config_middle_emulation_state enable) { return libinput_device_config_middle_emulation_set_enabled (device, enable); }
-    libinput_config_middle_emulation_state middle_emulation_get_enabled () { return libinput_device_config_middle_emulation_get_enabled (device); }
-    libinput_config_middle_emulation_state middle_emulation_get_default_enabled () { return libinput_device_config_middle_emulation_get_default_enabled (device); }
-    uint                            scroll_get_methods ()           { return libinput_device_config_scroll_get_methods (device); }
-    libinput_config_status          scroll_set_method (libinput_config_scroll_method method)            { return libinput_device_config_scroll_set_method (device, method); }
-    libinput_config_scroll_method   scroll_get_method ()            { return libinput_device_config_scroll_get_method (device); }
-    libinput_config_scroll_method   scroll_get_default_method ()    { return libinput_device_config_scroll_get_default_method (device); }
-    libinput_config_status          scroll_set_button (uint button) { return libinput_device_config_scroll_set_button (device, button); }
-    uint                            scroll_get_button ()            { return libinput_device_config_scroll_get_button (device); }
-    uint                            scroll_get_default_button ()    { return libinput_device_config_scroll_get_default_button (device); }
-    int                             dwt_is_available ()             { return libinput_device_config_dwt_is_available (device); }
-    libinput_config_status          dwt_set_enabled (libinput_config_dwt_state enable)              { return libinput_device_config_dwt_set_enabled (device, enable); }
-    libinput_config_dwt_state       dwt_get_enabled ()              { return libinput_device_config_dwt_get_enabled (device); }
-    libinput_config_dwt_state       dwt_get_default_enabled ()      { return libinput_device_config_dwt_get_default_enabled (device); }
+    uint                            config_send_events_get_mode ()         { return libinput_device_config_send_events_get_mode (device); }
+    uint                            config_send_events_get_default_mode () { return libinput_device_config_send_events_get_default_mode (device); }
+    int                             config_accel_is_available ()           { return libinput_device_config_accel_is_available (device); }
+    libinput_config_status          config_accel_set_speed (double speed)              { return libinput_device_config_accel_set_speed (device, speed); }
+    double                          config_accel_get_speed ()              { return libinput_device_config_accel_get_speed (device); }
+    double                          config_accel_get_default_speed ()      { return libinput_device_config_accel_get_default_speed (device); }
+    uint                            config_accel_get_profiles ()           { return libinput_device_config_accel_get_profiles (device); }
+    libinput_config_status          config_accel_set_profile (libinput_config_accel_profile mode)            { return libinput_device_config_accel_set_profile (device, mode); }
+    libinput_config_accel_profile   config_accel_get_profile ()            { return libinput_device_config_accel_get_profile (device); }
+    libinput_config_accel_profile   config_accel_get_default_profile ()    { return libinput_device_config_accel_get_default_profile (device); }
+    int                             config_scroll_has_natural_scroll ()    { return libinput_device_config_scroll_has_natural_scroll (device); }
+    libinput_config_status          config_scroll_set_natural_scroll_enabled (int enable) { return libinput_device_config_scroll_set_natural_scroll_enabled (device,enable); }
+    int                             config_scroll_get_natural_scroll_enabled () { return libinput_device_config_scroll_get_natural_scroll_enabled (device); }
+    int                             config_scroll_get_default_natural_scroll_enabled () { return libinput_device_config_scroll_get_default_natural_scroll_enabled (device); }
+    int                             config_left_handed_is_available ()     { return libinput_device_config_left_handed_is_available (device); }
+    libinput_config_status          config_left_handed_set (int left_handed)              { return libinput_device_config_left_handed_set (device,left_handed); }
+    int                             config_left_handed_get ()              { return libinput_device_config_left_handed_get (device); }
+    int                             config_left_handed_get_default ()      { return libinput_device_config_left_handed_get_default (device); }
+    uint                            config_click_get_methods ()            { return libinput_device_config_click_get_methods (device); }
+    libinput_config_status          config_click_set_method (libinput_config_click_method method)             { return libinput_device_config_click_set_method (device, method); }
+    libinput_config_click_method    config_click_get_method ()             { return libinput_device_config_click_get_method (device); }
+    libinput_config_click_method    config_click_get_default_method ()     { return libinput_device_config_click_get_default_method (device); }
+    int                             config_middle_emulation_is_available () { return libinput_device_config_middle_emulation_is_available (device); }
+    libinput_config_status          config_middle_emulation_set_enabled (libinput_config_middle_emulation_state enable) { return libinput_device_config_middle_emulation_set_enabled (device, enable); }
+    libinput_config_middle_emulation_state config_middle_emulation_get_enabled () { return libinput_device_config_middle_emulation_get_enabled (device); }
+    libinput_config_middle_emulation_state config_middle_emulation_get_default_enabled () { return libinput_device_config_middle_emulation_get_default_enabled (device); }
+    uint                            config_scroll_get_methods ()           { return libinput_device_config_scroll_get_methods (device); }
+    libinput_config_status          config_scroll_set_method (libinput_config_scroll_method method)            { return libinput_device_config_scroll_set_method (device, method); }
+    libinput_config_scroll_method   config_scroll_get_method ()            { return libinput_device_config_scroll_get_method (device); }
+    libinput_config_scroll_method   config_scroll_get_default_method ()    { return libinput_device_config_scroll_get_default_method (device); }
+    libinput_config_status          config_scroll_set_button (uint button) { return libinput_device_config_scroll_set_button (device, button); }
+    uint                            config_scroll_get_button ()            { return libinput_device_config_scroll_get_button (device); }
+    uint                            config_scroll_get_default_button ()    { return libinput_device_config_scroll_get_default_button (device); }
+    int                             config_dwt_is_available ()             { return libinput_device_config_dwt_is_available (device); }
+    libinput_config_status          config_dwt_set_enabled (libinput_config_dwt_state enable)              { return libinput_device_config_dwt_set_enabled (device, enable); }
+    libinput_config_dwt_state       config_dwt_get_enabled ()              { return libinput_device_config_dwt_get_enabled (device); }
+    libinput_config_dwt_state       config_dwt_get_default_enabled ()      { return libinput_device_config_dwt_get_default_enabled (device); }
 }
 
 struct
