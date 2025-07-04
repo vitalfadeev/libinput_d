@@ -20,7 +20,7 @@ main () {
 			case LIBINPUT_EVENT_POINTER_BUTTON:
 				writefln ("%s: %d %s", event.type.to!string, event.pointer.button, event.pointer.button_state.to!string); break;
 			case LIBINPUT_EVENT_POINTER_AXIS:
-				writefln ("%s: axe_source: %s", event.type.to!string, event.pointer.axis_source.to!string); break;
+				writefln ("%s: axe_source: %s: x,y: %f,%f", event.type.to!string, event.pointer.axis_source.to!string, event.pointer.axis_value (LIBINPUT_POINTER_AXIS_SCROLL_HORIZONTAL), event.pointer.axis_value (LIBINPUT_POINTER_AXIS_SCROLL_VERTICAL)); break;
 			case LIBINPUT_EVENT_TOUCH_DOWN:
 			case LIBINPUT_EVENT_TOUCH_UP:
 			case LIBINPUT_EVENT_TOUCH_MOTION:
