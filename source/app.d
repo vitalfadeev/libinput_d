@@ -10,6 +10,7 @@ main () {
 	foreach (event; LibInput (null))
 		switch (event.type) {
 			case LIBINPUT_EVENT_DEVICE_ADDED:
+			case LIBINPUT_EVENT_DEVICE_REMOVED:
 				writefln ("%s: %s added", 
 					event.type.to!string, 
 					event.device.name.to!string); break;
