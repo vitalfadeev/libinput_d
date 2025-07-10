@@ -17,7 +17,7 @@ LibInput {
     libinput_interface _interface;
     Event               event;
     pollfd              _fds;
-    int                 wait_tineout = -1;
+    int                 wait_tineout = -1;  // 0 - no-wait, int - int ms, -1 - max able
 
     alias front    =  event;
     alias empty    = _empty;
@@ -425,3 +425,22 @@ Tool {
     void*                       get_user_data ()                { return libinput_tablet_tool_get_user_data (tool); }
     void                        set_user_data (void* user_data) { return libinput_tablet_tool_set_user_data (tool,user_data); }
 }
+
+auto
+decode_enum (string STARTSWITH) (int btn) {
+    import std.string;
+    import input_event_codes;
+
+    static
+    foreach (m; __traits (allMembers,input_event_codes)) {
+        static if (m.startsWith (STARTSWITH)/* && is (__traits (getMember,input_event_codes,m)==int)*/) {
+            //pragma (msg,m," = ", __traits (getMember,input_event_codes,m));
+            if (btn == __traits (getMember,input_event_codes,m)) return m;
+        }
+    }
+
+    return "undefined";
+}
+
+alias decode_btn = decode_enum!"BTN_";
+alias decode_key = decode_enum!"KEY_";

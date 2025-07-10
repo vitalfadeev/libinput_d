@@ -1,6 +1,6 @@
 import std.conv        : to;
 import std.stdio       : writeln,writefln;
-import libinput_struct : LibInput;
+import libinput_struct : LibInput,decode_btn,decode_key;
 import libinput_d;
 import input_event_codes;
 
@@ -16,10 +16,11 @@ main () {
 					event.type.to!string, 
 					event.device.name.to!string); break;
 			case LIBINPUT_EVENT_KEYBOARD_KEY:
-				writefln ("%s: %d: %s", 
+				writefln ("%s: %d: %s: %s", 
 					event.type.to!string, 
 					event.keyboard.get_key,  // KEY_1,KEY_ESC,KEY_BACKSPACE
-					event.keyboard.get_key_state.to!string); break;
+					event.keyboard.get_key_state.to!string,
+					event.keyboard.get_key.decode_key); break;
 			case LIBINPUT_EVENT_POINTER_MOTION:
 				writefln ("%s: dx,dy: %f,%f", 
 					event.type.to!string, 
@@ -31,10 +32,11 @@ main () {
 					event.pointer.absolute_x, 
 					event.pointer.absolute_y); break;
 			case LIBINPUT_EVENT_POINTER_BUTTON:
-				writefln ("%s: %d %s", 
+				writefln ("%s: %d %s: %s", 
 					event.type.to!string, 
 					event.pointer.button,  // BTN_LEFT,BTN_RIGHT,BTN_MIDDLE
-					event.pointer.button_state.to!string); break;
+					event.pointer.button_state.to!string,
+					decode_btn (event.pointer.button)); break;
 			case LIBINPUT_EVENT_POINTER_AXIS:
 				writefln ("%s: axe_source: %s: x,y: %f,%f", 
 					event.type.to!string, 
