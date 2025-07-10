@@ -1,12 +1,12 @@
 # Read events from [libinput](https://wayland.freedesktop.org/libinput/doc/1.28.1/api/)
 
-Exmaple [app.d](source/app.d):
+Exmaple:
 ```D
 	foreach (event; LibInput (null))
 		writeln (event.type);
 ```
 
-Example 2:
+Example 2 [app.d](source/app.d):
 ```D
 	foreach (event; LibInput (null))
 		switch (event.type) {
