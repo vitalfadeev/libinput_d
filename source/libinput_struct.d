@@ -444,3 +444,10 @@ decode_enum (string STARTSWITH) (int btn) {
 
 alias decode_btn = decode_enum!"BTN_";
 alias decode_key = decode_enum!"KEY_";
+alias decode_snd = decode_enum!"SND_";
+alias decode_led = decode_enum!"LED_";
+alias decode_rep = decode_enum!"REP_";
+alias decode_msc = decode_enum!"MSC_";
+alias decode_sw  = decode_enum!"SW_";
+alias decode_rel = decode_enum!"REL_";
+alias decode_abs = decode_enum!"ABS_";
