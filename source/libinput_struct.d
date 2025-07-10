@@ -111,7 +111,7 @@ LibInput {
     }
 
     void
-    opOpAssign (string op : "~") (What b) {
+    opOpAssign (string op : "~",What) (What b) {
         if (b !is null) {
             // put event What
         }
