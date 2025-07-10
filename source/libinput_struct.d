@@ -15,7 +15,13 @@ LibInput {
     libinput*           _li;
     udev*               _udev;
     libinput_interface _interface;
-    Event              event;
+    Event               event;
+    pollfd              _fds;
+    int                 wait_tineout = -1;
+
+    alias front    =  event;
+    alias empty    = _empty;
+    alias popFront = _read;
 
     this (libinput* _li) {
         if (_li is null)
@@ -28,41 +34,88 @@ LibInput {
         _quit ();
     }
 
-    int
-    opApply (int delegate (Event event) dg) {
-        pollfd fds;
+    //int
+    //opApply (int delegate (Event event) dg) {
+    //    pollfd fds;
 
-        fds.fd = get_fd ();
-        fds.events = POLLIN;
-        fds.revents = 0;
+    //    fds.fd = get_fd ();
+    //    fds.events = POLLIN;
+    //    fds.revents = 0;
 
-        do {
-            for (dispatch (), event = get_event (); 
-                event != null; 
-                event.destroy (), dispatch (), event = get_event ()
-            ) {
-                // dg
-                if (auto result = dg (event)) {
-                    event.destroy ();
-                    return result;  // EXIT
-                }
+    //    do {
+    //        for (dispatch (), event = get_event ();
+    //            event != null; 
+    //            event.destroy (), dispatch (), event = get_event ()
+    //        ) {
+    //            // dg
+    //            if (auto result = dg (event)) {
+    //                event.destroy ();
+    //                return result;  // EXIT
+    //            }
  
-                // add device for listen
-                switch (event.type) {
-                    case LIBINPUT_EVENT_DEVICE_ADDED: {
-                        auto _dev =  event.device;
-                        _dev.config.send_events_set_mode (LIBINPUT_CONFIG_SEND_EVENTS_ENABLED);
-                        if (_dev.has_capability (LIBINPUT_DEVICE_CAP_TOUCH))
-                            _dev.ref_ ();
-                        break;
-                    }
-                    default:
-                }
-            }
-        } while (poll (&fds, 1, -1) >= 0);
+    //            // add device for listen
+    //            switch (event.type) {
+    //                case LIBINPUT_EVENT_DEVICE_ADDED: {
+    //                    auto _dev =  event.device;
+    //                    _dev.config.send_events_set_mode (LIBINPUT_CONFIG_SEND_EVENTS_ENABLED);
+    //                    if (_dev.has_capability (LIBINPUT_DEVICE_CAP_TOUCH))
+    //                        _dev.ref_ ();
+    //                    break;
+    //                }
+    //                default:
+    //            }
+    //        }
+    //    } while (poll (&fds, 1, wait_tineout) > 0);
 
-        return 0;
-    } 
+    //    return 0;
+    //} 
+
+    bool
+    _empty () {
+        return (event == null);
+    }
+
+    void
+    _read () {
+        if (event !is null)
+            event.destroy ();
+
+    _read_again:
+        dispatch ();
+        event = get_event ();
+
+        if (event is null) {
+            _wait_event_on_device ();
+            goto _read_again;
+        }
+
+        // add device for listen
+        switch (event.type) {
+            case LIBINPUT_EVENT_DEVICE_ADDED: {
+                auto _dev =  event.device;
+                _dev.config.send_events_set_mode (LIBINPUT_CONFIG_SEND_EVENTS_ENABLED);
+                if (_dev.has_capability (LIBINPUT_DEVICE_CAP_TOUCH))
+                    _dev.ref_ ();
+                break;
+            }
+            default:
+        }
+    }
+
+    void
+    _wait_event_on_device () {
+        if ((poll (&_fds, 1, wait_tineout) > 0) > 0)  // 0 = timeout
+            {} // OK
+        else 
+            throw new Exception ("device read error");
+    }
+
+    void
+    opOpAssign (string op : "~") (What b) {
+        if (b !is null) {
+            // put event What
+        }
+    }
 
     extern (C)
     static int 
@@ -90,6 +143,13 @@ LibInput {
             throw new Exception ("libevent: udev: init [FAIL] ");
 
         udev_assign_seat ("seat0");
+
+        //
+        _fds = pollfd (get_fd (), POLLIN, 0);
+
+        //
+        dispatch ();
+        event = get_event ();
     }
 
     void
@@ -112,7 +172,9 @@ struct
 Event {
     libinput_event* event;
     alias event this;
+    //@disable this ();
 
+    pragma (inline,true):
     libinput_event_type             type ()                         { return libinput_event_get_type (event); }
     libinput*                       get_context ()                  { return libinput_event_get_context (event); }
     libinput_event_pointer*         get_pointer_event ()            { return libinput_event_get_pointer_event (event); }
@@ -122,7 +184,7 @@ Event {
     libinput_event_tablet_tool*     get_tablet_tool_event ()        { return libinput_event_get_tablet_tool_event (event); }
     libinput_event_device_notify*   get_device_notify_event ()      { return libinput_event_get_device_notify_event (event); }
     //libinput_event*                 device_notify_get_base_event () { return libinput_event_device_notify_get_base_event (libinput_event_device_notify* event);
-    Device                          device  ()                      { return (cast (Device)  (libinput_event_get_device (event))); }
+    Device                          device  ()                      { return (cast (Device) (libinput_event_get_device (event))); }
     Pointer                         pointer ()                      { return (cast (Pointer) (libinput_event_get_pointer_event (event))); }
     Keyboard                        keyboard ()                     { return (cast (Keyboard) (libinput_event_get_keyboard_event (event))); }
     Touch                           touch ()                        { return (cast (Touch) (libinput_event_get_touch_event (event))); }
@@ -135,6 +197,7 @@ struct
 Device {
     libinput_device* device;
     alias device this;
+    //@disable this ();
     
     pragma (inline,true):
     libinput_device*                        ref_ ()                         { return libinput_device_ref (device); }
@@ -163,6 +226,7 @@ struct
 Config {
     libinput_device* device;
     alias device this;
+//    @disable this ();
 
     int                                     tap_get_finger_count ()  { return libinput_device_config_tap_get_finger_count (device); }
     libinput_config_status                  tap_set_enabled (libinput_config_tap_state enable)                      { return libinput_device_config_tap_set_enabled (device,enable); }
@@ -220,6 +284,7 @@ struct
 Pointer {
     libinput_event_pointer* event;
     alias event this;
+//    @disable this ();
 
     pragma (inline,true):
     uint                         time ()                                          { return libinput_event_pointer_get_time (event); }
@@ -246,6 +311,7 @@ struct
 Keyboard {
     libinput_event_keyboard* event;
     alias event this;
+//    @disable this ();
 
     pragma (inline,true):
     uint                get_time ()             { return libinput_event_keyboard_get_time (event); }
@@ -260,6 +326,7 @@ struct
 Touch {
     libinput_event_touch* event;
     alias event this;
+//    @disable this ();
 
     pragma (inline,true):
     uint            get_time ()                     { return libinput_event_touch_get_time (event); }
@@ -277,6 +344,7 @@ struct
 Gesture {
     libinput_event_gesture* event;
     alias event this;
+//    @disable this ();
 
     pragma (inline,true):
     uint            get_time ()             { return libinput_event_gesture_get_time (event); }
@@ -298,6 +366,7 @@ struct
 Tablet_Tool {
     libinput_event_tablet_tool* event;
     alias event this;
+//    @disable this ();
 
     pragma (inline,true):
     libinput_event*         get_base_event ()           { return libinput_event_tablet_tool_get_base_event (event); }
@@ -337,6 +406,7 @@ struct
 Tool {
     libinput_tablet_tool* tool;
     alias tool this;
+//    @disable this ();
 
     pragma (inline,true):
     libinput_tablet_tool_type   get_type ()                     { return libinput_tablet_tool_get_type (tool); }
