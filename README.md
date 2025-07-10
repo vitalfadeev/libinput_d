@@ -6,7 +6,7 @@ Exmaple [app.d](source/app.d):
 		writeln (event.type);
 ```
 
-Xxample 2:
+Example 2:
 ```D
 	foreach (event; LibInput (null))
 		switch (event.type) {
