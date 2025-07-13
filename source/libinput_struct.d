@@ -187,6 +187,69 @@ Event {
     Tablet_Tool                     tablet ()                       { return (cast (Tablet_Tool) (libinput_event_get_tablet_tool_event (event))); }
 
     void                            destroy ()                      {        libinput_event_destroy (event); }
+
+
+    string
+    toString () {
+        import std.format : format;
+        import std.conv   : to;
+
+        switch (type) {
+            case LIBINPUT_EVENT_DEVICE_ADDED:
+            case LIBINPUT_EVENT_DEVICE_REMOVED:
+                return format!"%s: %s added" (
+                    type, 
+                    device.name.to!string);
+            case LIBINPUT_EVENT_KEYBOARD_KEY:
+                return format!"%s: %d: %s: %s" ( 
+                    type, 
+                    keyboard.get_key,  // KEY_1,KEY_ESC,KEY_BACKSPACE
+                    keyboard.get_key_state,
+                    keyboard.get_key.decode_key);
+            case LIBINPUT_EVENT_POINTER_MOTION:
+                return format!"%s: dx,dy: %f,%f" (
+                    type, 
+                    pointer.dx, 
+                    pointer.dy); 
+            case LIBINPUT_EVENT_POINTER_MOTION_ABSOLUTE:
+                return format!"%s: abs_x,abx_y: %f,%f" (
+                    type, 
+                    pointer.absolute_x, 
+                    pointer.absolute_y);
+            case LIBINPUT_EVENT_POINTER_BUTTON:
+                return format!"%s: %d %s: %s" (
+                    type, 
+                    pointer.button,  // BTN_LEFT,BTN_RIGHT,BTN_MIDDLE
+                    pointer.button_state,
+                    decode_btn (pointer.button));
+            case LIBINPUT_EVENT_POINTER_AXIS:
+                return format!"%s: axe_source: %s: x,y: %f,%f" (
+                    type, 
+                    pointer.axis_source, 
+                    pointer.axis_value (LIBINPUT_POINTER_AXIS_SCROLL_HORIZONTAL), 
+                    pointer.axis_value (LIBINPUT_POINTER_AXIS_SCROLL_VERTICAL));
+            case LIBINPUT_EVENT_TOUCH_DOWN:
+            case LIBINPUT_EVENT_TOUCH_UP:
+            case LIBINPUT_EVENT_TOUCH_MOTION:
+            case LIBINPUT_EVENT_TOUCH_CANCEL:
+            case LIBINPUT_EVENT_TOUCH_FRAME:
+                return format!"%s" (type);
+            case LIBINPUT_EVENT_TABLET_TOOL_AXIS:
+            case LIBINPUT_EVENT_TABLET_TOOL_PROXIMITY:
+            case LIBINPUT_EVENT_TABLET_TOOL_TIP:
+            case LIBINPUT_EVENT_TABLET_TOOL_BUTTON:
+                return format!"%s" (type);
+            case LIBINPUT_EVENT_GESTURE_SWIPE_BEGIN:
+            case LIBINPUT_EVENT_GESTURE_SWIPE_UPDATE:
+            case LIBINPUT_EVENT_GESTURE_SWIPE_END:
+            case LIBINPUT_EVENT_GESTURE_PINCH_BEGIN:
+            case LIBINPUT_EVENT_GESTURE_PINCH_UPDATE:
+            case LIBINPUT_EVENT_GESTURE_PINCH_END:
+                return format!"%s" (type);
+            default:
+                return format!"%s" (type);
+        }
+    }
 }
 //syn       = EV_SYN,
 //key       = EV_KEY,
