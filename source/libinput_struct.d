@@ -17,11 +17,7 @@ LibInput {
     libinput_interface _interface;
     Event               event;
     pollfd              _fds;
-    int                 wait_tineout = -1;  // 0 - no-wait, int - int ms, -1 - max able
-
-    alias front    =  event;
-    alias empty    = _empty;
-    alias popFront = _read;
+    int                 wait_tineout = -1;
 
     this (libinput* _li) {
         if (_li is null)
@@ -70,16 +66,13 @@ LibInput {
     //    return 0;
     //} 
 
-    bool
-    _empty () {
-        return (event == null);
+    Event
+    front () {
+        return event;
     }
 
-    void
-    _read () {
-        if (event !is null)
-            event.destroy ();
-
+    bool
+    empty () {  // wait on empty
     _read_again:
         dispatch ();
         event = get_event ();
@@ -100,6 +93,13 @@ LibInput {
             }
             default:
         }
+
+        return false;
+    }
+
+    void
+    popFront () {
+        event.destroy ();
     }
 
     void
@@ -112,9 +112,9 @@ LibInput {
 
     void
     opOpAssign (string op : "~",What) (What b) {
-        if (b !is null) {
-            // put event What
-        }
+        //if (b !is null) {
+        //    // put event What
+        //}
     }
 
     extern (C)
@@ -146,10 +146,6 @@ LibInput {
 
         //
         _fds = pollfd (get_fd (), POLLIN, 0);
-
-        //
-        dispatch ();
-        event = get_event ();
     }
 
     void
@@ -192,6 +188,21 @@ Event {
 
     void                            destroy ()                      {        libinput_event_destroy (event); }
 }
+//syn       = EV_SYN,
+//key       = EV_KEY,
+//rel       = EV_REL,
+//abs       = EV_ABS,
+//msc       = EV_MSC,
+//sw        = EV_SW,
+//led       = EV_LED,
+//snd       = EV_SND,
+//rep       = EV_REP,
+//ff        = EV_FF,
+//pwr       = EV_PWR,
+//ff_status = EV_FF_STATUS,
+//max       = EV_MAX,
+//// custom
+//draw      = EV_MAX + 1,
 
 struct
 Device {

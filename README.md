@@ -87,3 +87,10 @@ LIBINPUT_EVENT_KEYBOARD_KEY: 29: LIBINPUT_KEY_STATE_PRESSED: KEY_LEFTCTRL
 LIBINPUT_EVENT_KEYBOARD_KEY: 46: LIBINPUT_KEY_STATE_PRESSED: KEY_C
 ^C
 ```
+
+## dub.sjon
+```
+	...
+	"libs-posix"     : ["libinput","libudev"],
+	...
+```
