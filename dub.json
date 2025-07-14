@@ -7,6 +7,6 @@
 	"libs-posix"  : ["libinput"],
 	"dflags"      : ["-preview=dip1000"],
 			"dependencies": {
-				"udev"       : {"path":"deps/udev"},
+				"udev_d"       : {"path":"deps/udev_d"},
 			},			
 }
