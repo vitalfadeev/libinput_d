@@ -15,7 +15,7 @@ LibInput {
     libinput*           _li;
     udev*               _udev;
     libinput_interface _interface;
-    Event               event;
+    InpEvent            event;
     pollfd              _fds;
     int                 wait_tineout = -1;
 
@@ -66,7 +66,7 @@ LibInput {
     //    return 0;
     //} 
 
-    Event
+    InpEvent
     front () {
         return event;
     }
@@ -156,7 +156,7 @@ LibInput {
 
     pragma (inline,true):
     int         dispatch ()  { return libinput_dispatch (_li); }
-    Event       get_event () { return cast (Event) (libinput_get_event (_li)); }
+    InpEvent    get_event () { return cast (InpEvent) (libinput_get_event (_li)); }
     libinput*   unref ()     { return libinput_unref (_li); }
     int         get_fd ()    { return libinput_get_fd (_li); }
     int         udev_assign_seat (const(char)* seat_id) { return libinput_udev_assign_seat (_li,seat_id); }
@@ -165,7 +165,7 @@ LibInput {
 }
 
 struct
-Event {
+InpEvent {
     libinput_event* event;
     alias event this;
     //@disable this ();
@@ -197,7 +197,7 @@ Event {
         switch (type) {
             case LIBINPUT_EVENT_DEVICE_ADDED:
             case LIBINPUT_EVENT_DEVICE_REMOVED:
-                return format!"%s: %s added" (
+                return format!"%s: %s" (
                     type, 
                     device.name.to!string);
             case LIBINPUT_EVENT_KEYBOARD_KEY:
@@ -249,6 +249,33 @@ Event {
             default:
                 return format!"%s" (type);
         }
+    }
+
+    enum
+    Type : ushort {
+        NONE                    = libinput_event_type.LIBINPUT_EVENT_NONE,
+        DEVICE_ADDED            = libinput_event_type.LIBINPUT_EVENT_DEVICE_ADDED,
+        DEVICE_REMOVED          = libinput_event_type.LIBINPUT_EVENT_DEVICE_REMOVED,
+        KEYBOARD_KEY            = libinput_event_type.LIBINPUT_EVENT_KEYBOARD_KEY,
+        POINTER_MOTION          = libinput_event_type.LIBINPUT_EVENT_POINTER_MOTION,
+        POINTER_MOTION_ABSOLUTE = libinput_event_type.LIBINPUT_EVENT_POINTER_MOTION_ABSOLUTE,
+        POINTER_BUTTON          = libinput_event_type.LIBINPUT_EVENT_POINTER_BUTTON,
+        POINTER_AXIS            = libinput_event_type.LIBINPUT_EVENT_POINTER_AXIS,
+        POINTER_AXIS_           = 404,
+        TOUCH_DOWN              = libinput_event_type.LIBINPUT_EVENT_TOUCH_DOWN,
+        TOUCH_UP                = libinput_event_type.LIBINPUT_EVENT_TOUCH_UP,
+        TOUCH_MOTION            = libinput_event_type.LIBINPUT_EVENT_TOUCH_MOTION,
+        TOUCH_CANCEL            = libinput_event_type.LIBINPUT_EVENT_TOUCH_CANCEL,
+        TABLET_TOOL_AXIS        = libinput_event_type.LIBINPUT_EVENT_TABLET_TOOL_AXIS,
+        TABLET_TOOL_PROXIMITY   = libinput_event_type.LIBINPUT_EVENT_TABLET_TOOL_PROXIMITY,
+        TABLET_TOOL_TIP         = libinput_event_type.LIBINPUT_EVENT_TABLET_TOOL_TIP,
+        TABLET_TOOL_BUTTON      = libinput_event_type.LIBINPUT_EVENT_TABLET_TOOL_BUTTON,
+        GESTURE_SWIPE_BEGIN     = libinput_event_type.LIBINPUT_EVENT_GESTURE_SWIPE_BEGIN,
+        GESTURE_SWIPE_UPDATE    = libinput_event_type.LIBINPUT_EVENT_GESTURE_SWIPE_UPDATE,
+        GESTURE_SWIPE_END       = libinput_event_type.LIBINPUT_EVENT_GESTURE_SWIPE_END,
+        GESTURE_PINCH_BEGIN     = libinput_event_type.LIBINPUT_EVENT_GESTURE_PINCH_BEGIN,
+        GESTURE_PINCH_UPDATE    = libinput_event_type.LIBINPUT_EVENT_GESTURE_PINCH_UPDATE,
+        GESTURE_PINCH_END       = libinput_event_type.LIBINPUT_EVENT_GESTURE_PINCH_END,
     }
 }
 //syn       = EV_SYN,

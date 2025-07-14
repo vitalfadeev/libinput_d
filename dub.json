@@ -1,9 +1,12 @@
 {
-	"name"        : "libinput",
+	"name"        : "libinput_d",
 	"authors"     : ["vf"],
 	"copyright"   : "Copyright © 2025, vf",
 	"description" : "A minimal D application.",
 	"license"     : "proprietary",
-	"libs-posix"  : ["libinput","libudev"],
-	"dflags"      : ["-preview=dip1000"]
+	"libs-posix"  : ["libinput"],
+	"dflags"      : ["-preview=dip1000"],
+			"dependencies": {
+				"udev"       : {"path":"deps/udev"},
+			},			
 }
