@@ -25,7 +25,7 @@
 import core.stdc.stdarg;
 import udev_d;
 
-pragma (lib,"libinput");
+//pragma (lib,"libinput");
 
 extern (C):
 
